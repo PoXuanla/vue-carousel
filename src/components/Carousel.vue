@@ -1,8 +1,12 @@
 <template>
-  <div id="carousel">
+  <div id="carousel" ref="carousel">
     <div class="container" :style="[containerStyle]">
       <template v-for="item in carouselItems" :key="item.id">
-        <img class="item" :src="item.img" />
+        <img
+          class="item"
+          :src="item.img"
+          :style="{ width: `${carouselWidth}px` }"
+        />
       </template>
     </div>
     <button class="btn btnPrev" @click="onPref">
@@ -15,24 +19,35 @@
 </template>
 <script setup lang="ts">
 import type { CarouselItem } from "@/models/Carouserl";
+import { onBeforeUnmount, onMounted, ref } from "vue";
 import useCarousel from "../hooks/useCarousel";
 
 const props = defineProps({
   items: { type: Array<CarouselItem>, default: [] },
   autoPlay: { type: Boolean, default: true },
 });
-
+const carousel = ref(null);
+const carouselWidth = ref(0);
 const { onNext, onPref, containerStyle, carouselItems } = useCarousel(
   props.items,
   props.autoPlay
 );
+const getCarouselWidth = () => {
+  carouselWidth.value = carousel.value.offsetWidth;
+};
+onMounted(() => {
+  getCarouselWidth();
+  window.addEventListener("resize", getCarouselWidth);
+});
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", getCarouselWidth);
+});
 </script>
-
 <style>
 #carousel {
   position: relative;
+  height: 500px;
   width: 100%;
-  height: 100%;
   overflow: hidden;
 }
 .container {
@@ -41,7 +56,6 @@ const { onNext, onPref, containerStyle, carouselItems } = useCarousel(
   height: 100%;
 }
 .item {
-  width: 100%;
   object-fit: cover;
 }
 .btn {

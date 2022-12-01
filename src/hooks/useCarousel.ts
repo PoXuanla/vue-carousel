@@ -1,4 +1,4 @@
-import { computed, ref, watch, type Ref } from "vue";
+import { computed, onMounted, ref, watch, type Ref } from "vue";
 import type { CarouselItem } from "../models/Carouserl";
 
 export default (items: Array<CarouselItem>, autoPlay: Boolean) => {
@@ -31,7 +31,8 @@ export default (items: Array<CarouselItem>, autoPlay: Boolean) => {
     return [propsItems[itemsLastIndex], ...propsItems, propsItems[0]];
   });
   const currentTranslateX = computed(() => {
-    const moveDistance = -1 * currentIndex.value * 100;
+    const moveDistance =
+      -1 * currentIndex.value * (100 / carouselItems.value.length);
     return moveDistance;
   });
   /**
