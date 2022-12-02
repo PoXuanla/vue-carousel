@@ -1,5 +1,12 @@
 <template>
-  <Carousel :items="items" :autoPlay="false"></Carousel>
+  <Carousel
+    :items="items"
+    width="100%"
+    height="200px"
+    :slideDuration="1000"
+    :autoPlay="true"
+    :autoSwitchInterval="0"
+  ></Carousel>
 </template>
 <script setup lang="ts">
 import { reactive } from "vue";

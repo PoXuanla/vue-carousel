@@ -1,13 +1,13 @@
 <template>
-  <div id="carousel" ref="carousel">
-    <div class="container" :style="[containerStyle]">
-      <template v-for="item in carouselItems" :key="item.id">
-        <img
-          class="item"
-          :src="item.img"
-          :style="{ width: `${carouselWidth}px` }"
-        />
-      </template>
+  <div id="carousel" ref="carouselRef" :style="carouselStyle">
+    <div class="container" :style="containerStyle">
+      <Slide
+        v-for="item in carouselItems"
+        :key="item.id"
+        :src="item.img"
+        :width="slideWidth"
+        :height="props.height"
+      />
     </div>
     <button class="btn btnPrev" @click="onPref">
       <span class="material-symbols-outlined"> arrow_back_ios_new </span>
@@ -17,37 +17,45 @@
     </button>
   </div>
 </template>
+
 <script setup lang="ts">
 import type { CarouselItem } from "@/models/Carouserl";
-import { onBeforeUnmount, onMounted, ref } from "vue";
+import { ref, type Ref } from "vue";
 import useCarousel from "../hooks/useCarousel";
+import Slide from "./Slide.vue";
 
 const props = defineProps({
   items: { type: Array<CarouselItem>, default: [] },
   autoPlay: { type: Boolean, default: true },
+  width: { type: String, default: "100%" },
+  height: { type: String, default: "100%" },
+  autoSwitchInterval: { type: Number, default: 3000 },
+  slideDuration: { type: Number, default: 1000 },
 });
-const carousel = ref(null);
-const carouselWidth = ref(0);
-const { onNext, onPref, containerStyle, carouselItems } = useCarousel(
+
+const carouselRef: Ref<HTMLElement | null> = ref(null);
+
+const {
+  onNext,
+  onPref,
+  containerStyle,
+  carouselStyle,
+  carouselItems,
+  slideWidth,
+} = useCarousel(
   props.items,
-  props.autoPlay
+  props.autoPlay,
+  props.width,
+  props.height,
+  carouselRef,
+  props.autoSwitchInterval,
+  props.slideDuration
 );
-const getCarouselWidth = () => {
-  carouselWidth.value = carousel.value.offsetWidth;
-};
-onMounted(() => {
-  getCarouselWidth();
-  window.addEventListener("resize", getCarouselWidth);
-});
-onBeforeUnmount(() => {
-  window.removeEventListener("resize", getCarouselWidth);
-});
 </script>
+
 <style>
 #carousel {
   position: relative;
-  height: 500px;
-  width: 100%;
   overflow: hidden;
 }
 .container {
@@ -55,9 +63,7 @@ onBeforeUnmount(() => {
   position: absolute;
   height: 100%;
 }
-.item {
-  object-fit: cover;
-}
+
 .btn {
   position: absolute;
   display: flex;

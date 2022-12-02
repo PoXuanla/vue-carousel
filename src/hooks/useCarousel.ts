@@ -1,9 +1,26 @@
-import { computed, onMounted, ref, watch, type Ref } from "vue";
+import {
+  computed,
+  ref,
+  watch,
+  type Ref,
+  onBeforeUnmount,
+  onMounted,
+} from "vue";
 import type { CarouselItem } from "../models/Carouserl";
 
-export default (items: Array<CarouselItem>, autoPlay: Boolean) => {
+export default (
+  items: Array<CarouselItem>,
+  autoPlay: Boolean,
+  carouselWidth: String,
+  carouselHeight: String,
+  carouselRef: Ref<HTMLElement | null>,
+  autoSwitchInterval: number,
+  slideDuration: number
+) => {
+  /** 圖片寬度*/
+  const slideWidth: Ref<string> = ref("");
   /**切換輪播的動畫時間 */
-  const transition = ref("all .3s");
+  const transition = ref("");
   /**當前輪播 Item 的索引 */
   const currentIndex: Ref<number> = ref(1);
   /**是否可以切換下一個輪播 */
@@ -13,23 +30,35 @@ export default (items: Array<CarouselItem>, autoPlay: Boolean) => {
   /**開始自動播放的 TimeOut*/
   const autoSwitchStartTimer: Ref<any> = ref(null);
   /**自動播放的時間間隔 Interval */
-  const autoSwitchInterval: Ref<any> = ref(null);
+  const autoSwitchIntervalTimer: Ref<any> = ref(null);
 
   /**使用者自定義配置 */
   const autoPlayEnabled: Ref<Boolean> = ref(autoPlay);
 
+  const carouselStyle = computed(() => {
+    return {
+      width: carouselWidth,
+      height: carouselHeight,
+    };
+  });
+
   const containerStyle = computed(() => {
+    if (transition.value.length === 0)
+      return {
+        transition: `all ${slideDuration}px`,
+        transform: `translateX(${currentTranslateX.value}%)`,
+      };
     return {
       transition: transition.value,
       transform: `translateX(${currentTranslateX.value}%)`,
     };
   });
-
   const carouselItems = computed(() => {
     const propsItems = items;
     const itemsLastIndex = propsItems.length - 1;
     return [propsItems[itemsLastIndex], ...propsItems, propsItems[0]];
   });
+
   const currentTranslateX = computed(() => {
     const moveDistance =
       -1 * currentIndex.value * (100 / carouselItems.value.length);
@@ -41,7 +70,7 @@ export default (items: Array<CarouselItem>, autoPlay: Boolean) => {
   const onPref = () => {
     if (!canNextSwitch.value) return;
     currentIndex.value = currentIndex.value - 1;
-    waitingNextSwitch(300);
+    waitingNextSwitch(slideDuration);
     if (autoPlayEnabled.value) autoSwitchAfterStopAction(3000);
   };
   /**
@@ -50,7 +79,7 @@ export default (items: Array<CarouselItem>, autoPlay: Boolean) => {
   const onNext = () => {
     if (!canNextSwitch.value) return;
     currentIndex.value = currentIndex.value + 1;
-    waitingNextSwitch(300);
+    waitingNextSwitch(slideDuration);
     if (autoPlayEnabled.value) autoSwitchAfterStopAction(3000);
   };
   /**
@@ -71,7 +100,7 @@ export default (items: Array<CarouselItem>, autoPlay: Boolean) => {
     setTimeout(() => {
       transition.value = "none";
       currentIndex.value = newIndex;
-    }, 300);
+    }, slideDuration);
   };
 
   /**
@@ -91,17 +120,17 @@ export default (items: Array<CarouselItem>, autoPlay: Boolean) => {
       if (currentIndex.value === 0) {
         const newIndex = carouselItems.value.length - 2;
         restartByHeadAndTail(newIndex);
-        transition.value = "all .3s";
+        transition.value = `all ${slideDuration}ms`;
       }
       if (currentIndex.value === carouselItems.value.length - 1) {
         restartByHeadAndTail(1);
-        transition.value = "all .3s";
+        transition.value = `all ${slideDuration}ms`;
       }
       if (
         currentIndex.value === 2 ||
         currentIndex.value === carouselItems.value.length - 3
       ) {
-        transition.value = "all .3s";
+        transition.value = `all ${slideDuration}ms`;
       }
     }
   );
@@ -114,15 +143,33 @@ export default (items: Array<CarouselItem>, autoPlay: Boolean) => {
       if (!autoPlayEnabled.value) return;
 
       if (!canAutoSwitchNow.value) {
-        clearInterval(autoSwitchInterval.value);
+        clearInterval(autoSwitchIntervalTimer.value);
         return;
       }
-      autoSwitchInterval.value = setInterval(() => {
+      autoSwitchIntervalTimer.value = setInterval(() => {
         currentIndex.value = currentIndex.value + 1;
-      }, 1000);
+      }, autoSwitchInterval + slideDuration);
     },
     { immediate: true }
   );
+  const setSlideWidth = () => {
+    slideWidth.value = `${carouselRef.value?.offsetWidth ?? 0}px`;
+  };
 
-  return { onPref, onNext, containerStyle, carouselItems };
+  onMounted(() => {
+    setSlideWidth();
+    window.addEventListener("resize", setSlideWidth);
+  });
+
+  onBeforeUnmount(() => {
+    window.removeEventListener("resize", setSlideWidth);
+  });
+  return {
+    onPref,
+    onNext,
+    containerStyle,
+    carouselStyle,
+    carouselItems,
+    slideWidth,
+  };
 };
