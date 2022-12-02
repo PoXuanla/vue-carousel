@@ -1,16 +1,17 @@
 <template>
-  <Carousel
+  <vue3-xuan-carousel
     :items="items"
-    width="100%"
+    width="75%"
+    maxWidth="500px"
     height="200px"
     :slideDuration="1000"
     :autoPlay="true"
     :autoSwitchInterval="0"
-  ></Carousel>
+  ></vue3-xuan-carousel>
 </template>
+
 <script setup lang="ts">
 import { reactive } from "vue";
-import Carousel from "./components/Carousel.vue";
 import type { CarouselItem } from "./models/Carouserl";
 
 const items: Array<CarouselItem> = reactive([

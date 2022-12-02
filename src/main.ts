@@ -1,6 +1,5 @@
 import { createApp } from "vue";
 import App from "./App.vue";
+import vue3XuanCarousel from "./components/carousel";
 
-import "./assets/main.css";
-
-createApp(App).mount("#app");
+createApp(App).use(vue3XuanCarousel).mount("#app");

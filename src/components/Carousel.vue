@@ -10,10 +10,16 @@
       />
     </div>
     <button class="btn btnPrev" @click="onPref">
-      <span class="material-symbols-outlined"> arrow_back_ios_new </span>
+      <img
+        src="../assets/icon/btn-Prev.svg"
+        style="width: 25px; height: 25px; margin-left: 10px"
+      />
     </button>
     <button class="btn btnNext" @click="onNext">
-      <span class="material-symbols-outlined"> arrow_forward_ios </span>
+      <img
+        src="../assets/icon/btn-Next.svg"
+        style="width: 25px; height: 25px"
+      />
     </button>
   </div>
 </template>
@@ -28,6 +34,7 @@ const props = defineProps({
   items: { type: Array<CarouselItem>, default: [] },
   autoPlay: { type: Boolean, default: true },
   width: { type: String, default: "100%" },
+  maxWidth: { type: String, default: "" },
   height: { type: String, default: "100%" },
   autoSwitchInterval: { type: Number, default: 3000 },
   slideDuration: { type: Number, default: 1000 },
@@ -46,6 +53,7 @@ const {
   props.items,
   props.autoPlay,
   props.width,
+  props.maxWidth,
   props.height,
   carouselRef,
   props.autoSwitchInterval,

@@ -11,8 +11,9 @@ import type { CarouselItem } from "../models/Carouserl";
 export default (
   items: Array<CarouselItem>,
   autoPlay: Boolean,
-  carouselWidth: String,
-  carouselHeight: String,
+  carouselWidth: string,
+  carouselMaxWidth: string,
+  carouselHeight: string,
   carouselRef: Ref<HTMLElement | null>,
   autoSwitchInterval: number,
   slideDuration: number
@@ -39,6 +40,7 @@ export default (
     return {
       width: carouselWidth,
       height: carouselHeight,
+      maxWidth: carouselMaxWidth === "" ? carouselWidth : carouselMaxWidth,
     };
   });
 
@@ -154,6 +156,7 @@ export default (
   );
   const setSlideWidth = () => {
     slideWidth.value = `${carouselRef.value?.offsetWidth ?? 0}px`;
+    console.log(`${carouselRef.value?.offsetWidth ?? 0}px`);
   };
 
   onMounted(() => {
