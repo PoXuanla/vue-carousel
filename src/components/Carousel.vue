@@ -1,6 +1,11 @@
 <template>
-  <div id="carousel" ref="carouselRef" :style="carouselStyle">
-    <div class="container" :style="containerStyle">
+  <div
+    id="carousel"
+    ref="carouselRef"
+    :style="carouselStyle"
+    v-if="items.length !== 0"
+  >
+    <div id="carousel-container" :style="containerStyle">
       <Slide
         v-for="item in carouselItems"
         :key="item.id"
@@ -9,13 +14,13 @@
         :height="props.height"
       />
     </div>
-    <button class="btn btnPrev" @click="onPref">
+    <button class="carousel-btn btnPrev" @click="onPref">
       <img
         src="../assets/icon/btn-Prev.svg"
         style="width: 25px; height: 25px; margin-left: 10px"
       />
     </button>
-    <button class="btn btnNext" @click="onNext">
+    <button class="carousel-btn btnNext" @click="onNext">
       <img
         src="../assets/icon/btn-Next.svg"
         style="width: 25px; height: 25px"
@@ -32,7 +37,7 @@ import Slide from "./Slide.vue";
 
 const props = defineProps({
   items: { type: Array<CarouselItem>, default: [] },
-  autoPlay: { type: Boolean, default: true },
+  autoPlay: { type: Boolean, default: false },
   width: { type: String, default: "100%" },
   maxWidth: { type: String, default: "" },
   height: { type: String, default: "100%" },
@@ -66,13 +71,13 @@ const {
   position: relative;
   overflow: hidden;
 }
-.container {
+#carousel-container {
   display: flex;
   position: absolute;
   height: 100%;
 }
 
-.btn {
+.carousel-btn {
   position: absolute;
   display: flex;
   justify-content: center;
@@ -91,8 +96,5 @@ const {
 .btnNext {
   top: 50%;
   right: 50px;
-}
-img {
-  max-width: none !important;
 }
 </style>

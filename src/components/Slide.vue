@@ -15,6 +15,7 @@ const slideStyle = computed(() => {
   return {
     width: props.width,
     height: props.height,
+    maxWidth: props.width,
   };
 });
 </script>
