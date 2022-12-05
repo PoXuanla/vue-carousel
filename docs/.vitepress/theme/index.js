@@ -1,6 +1,5 @@
 import DefaultTheme from "vitepress/theme";
 import vue3XuanCarousel from "vue3-xuan-carousel";
-import "../../../node_modules/vue3-xuan-carousel/style.css"
 
 export default {
     ...DefaultTheme,
