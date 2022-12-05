@@ -14,6 +14,7 @@ export default defineConfig({
       name: "vue3-xuan-carousel",
       fileName: "vue3-xuan-carousel",
     },
+    cssCodeSplit: true,
     rollupOptions: {
       external: ["vue"],
       output: {
