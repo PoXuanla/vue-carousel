@@ -92,4 +92,7 @@ const {
   top: 50%;
   right: 50px;
 }
+img {
+  max-width: none !important;
+}
 </style>

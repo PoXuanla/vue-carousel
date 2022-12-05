@@ -1,13 +1,15 @@
 <template>
-  <vue3-xuan-carousel
-    :items="items"
-    width="75%"
-    maxWidth="500px"
-    height="200px"
-    :slideDuration="1000"
-    :autoPlay="true"
-    :autoSwitchInterval="0"
-  ></vue3-xuan-carousel>
+  <div>
+    <vue3-xuan-carousel
+      :items="items"
+      width="100%"
+      height="100px"
+      max-width="500px"
+      :slideDuration="1000"
+      :autoPlay="true"
+      :autoSwitchInterval="0"
+    ></vue3-xuan-carousel>
+  </div>
 </template>
 
 <script setup lang="ts">
